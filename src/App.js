@@ -1,4 +1,5 @@
 
+import { Toaster } from 'react-hot-toast';
 import { RouterProvider } from 'react-router-dom';
 import './App.css';
 import { router } from './Routes/Routes';
@@ -7,6 +8,8 @@ function App() {
   return (
     <div className="max-w-[1240px] mx-auto my-5 font-arkFont bg-bgColor text-black ">
       <RouterProvider router={router}></RouterProvider>
+      <Toaster position="top-center"
+  reverseOrder={false}/>
     </div>
   );
 }
