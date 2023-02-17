@@ -9,7 +9,7 @@ const googleProvider = new GoogleAuthProvider();
 const UserProvider = ({ children }) => {
     const [loading, isLoading] = useState(true);
     const [user, setUser] = useState(null);
-
+    const [loggedInUser, setLoggedInUser] = useState(null);
 
     const googleSign = () => {
         isLoading(true);
@@ -37,16 +37,26 @@ const UserProvider = ({ children }) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
-            console.log('current user:', currentUser);
+         
+            if (currentUser != null) {
+                fetch(`http://localhost:5003/get-user?email=${currentUser.email}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log(data)
+                        setLoggedInUser(data);
+                })
+            }
             isLoading(false);
         })
         
         return () => {
             unsubscribe();
         }
-    },[])
+    }, [])
+    
 
-    const userInfo = {user, loading, googleSign,logOut,emailSignIn,emailSignUp,updateName,isLoading}
+
+    const userInfo = {user, loading, googleSign,logOut,emailSignIn,emailSignUp,updateName,isLoading, loggedInUser}
 
     return (
         <UserContext.Provider value={userInfo}>
