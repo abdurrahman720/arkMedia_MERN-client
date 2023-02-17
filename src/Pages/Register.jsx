@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState,useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Link, useLocation, useNavigate } from "react-router-dom";
@@ -21,11 +21,11 @@ const Register = () => {
   const imgHostKey = process.env.REACT_APP_imgbb;
 
 
-  const handleSignIn = (data) => {
+  const handleSignUp = (data) => {
     setSignError("");
     console.log(data);
     //firebase authentication
-    emailSignUp(data.email, data.password)
+    emailSignUp(data?.email, data?.password)
       .then(userCredentials => {
         const signedInUser = userCredentials.user;
         console.log(signedInUser);
@@ -70,7 +70,8 @@ const Register = () => {
                           .then((response) => response.json())
                           .then((data) => {
                             localStorage.setItem("arkMEDIA", data.accessToken);
-                            toast.success("Registration Success!")
+                            toast.success("Registration Success!");
+                            navigate("/");
                         })
                     }
                   })
@@ -79,8 +80,23 @@ const Register = () => {
             })
           });
         
+      })
+      .catch((err) => {
+        isLoading(false);
+        toast.error(err.message);
     })
   }
+
+//   useEffect(() => {
+//     toast.promise(handleSignUp(), {
+//       loading: "Creating User",
+
+//       error: "User created failed",
+//       success: "User has been created",
+      
+//     });
+// },[])
+  
 
 
   return (
@@ -88,9 +104,9 @@ const Register = () => {
       className="hero min-h-screen bg-bgColor"
       style={{ backgroundImage: `url(${image})` }}
     >
-      <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100 bg-opacity-90">
+      <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100 bg-opacity-95">
         <div className="card-body">
-          <form onSubmit={handleSubmit(handleSignIn)}>
+          <form onSubmit={handleSubmit(handleSignUp)}>
             <h2 className="text-2xl text-center">Register</h2>
             <div className="form-control w-full max-w-xs">
               <label className="label">

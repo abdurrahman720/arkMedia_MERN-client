@@ -1,20 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState,useContext} from 'react';
 import { useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
 import image from '../assets/png/logo-color.png'
+import { UserContext } from "../Context/UserProvider";
+import { toast } from "react-hot-toast";
 
 const Login = () => {
+  const { emailSignIn, isLoading, googleSign } = useContext(UserContext);
+  
+  const navigate = useNavigate();
+  const { register, formState: { errors }, handleSubmit } = useForm();
+  const [loginError, setLoginError] = useState("");
+
+  const handleSignIn = (data) => {
+    setLoginError("")
+    emailSignIn(data?.email, data?.password)
+      .then(userCredentials => {
+        const user = userCredentials.user;
+         //jwt token
+         fetch(`http://localhost:5003/jwt?email=${user?.email}`)
+         .then((response) => response.json())
+         .then((data) => {
+           localStorage.setItem("arkMEDIA", data.accessToken);
+           toast.success("Login Success!")
+           navigate('/');
+          
+       })
+      })
+      .catch(err => {
+        isLoading(false);
+        toast.error(err.message);
+        setLoginError(err.message);
+    })
+    
+  }
 
 
-    const { register, formState: { errors }, handleSubmit } = useForm();
-    const [loginError, setLoginError] = useState("");
 
     return (
         <div className="hero min-h-screen" style={{ backgroundImage: `url(${image})` }}>
         
-             <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100 bg-opacity-90">
+             <div className="card flex-shrink-0 w-full max-w-sm shadow-2xl bg-base-100 bg-opacity-95">
             <div className="card-body">
-              <form onSubmit>
+              <form onSubmit={handleSubmit(handleSignIn)}>
                 <h2 className="text-2xl text-center">Login</h2>
                 <div className="form-control w-full max-w-xs">
                   <label className="label">
