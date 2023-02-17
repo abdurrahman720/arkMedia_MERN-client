@@ -9,7 +9,7 @@ const googleProvider = new GoogleAuthProvider();
 const UserProvider = ({ children }) => {
     const [loading, isLoading] = useState(true);
     const [user, setUser] = useState(null);
-    const [loggedInUser, setLoggedInUser] = useState(null);
+    const [loggedInUser, setLoggedInUser] = useState({});
 
     const googleSign = () => {
         isLoading(true);
@@ -37,13 +37,15 @@ const UserProvider = ({ children }) => {
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
-         
             if (currentUser != null) {
-                fetch(`http://localhost:5003/get-user?email=${currentUser.email}`)
+                isLoading(true);
+                fetch(`http://localhost:5003/get-user?email=${currentUser?.email}`)
                     .then(response => response.json())
                     .then(data => {
-                        console.log(data)
+                       console.log(data)
                         setLoggedInUser(data);
+                        console.log(loggedInUser);
+                        isLoading(false);
                 })
             }
             isLoading(false);

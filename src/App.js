@@ -6,7 +6,7 @@ import { router } from './Routes/Routes';
 
 function App() {
   return (
-    <div className="max-w-[1240px] mx-auto my-5 font-arkFont bg-bgColor text-black ">
+    <div className="max-w-[1240px] mx-auto my-5 font-arkFont text-black ">
       <RouterProvider router={router}></RouterProvider>
       <Toaster position="top-center"
   reverseOrder={false}/>
