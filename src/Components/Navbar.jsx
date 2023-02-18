@@ -9,7 +9,6 @@ const Navbar = () => {
   const { logOut, loggedInUser, loading } = useContext(UserContext);
   const navigate = useNavigate();
 
-  const { userImage } = loggedInUser;
 
 
   const handleLogOut = () => {
@@ -33,11 +32,11 @@ const Navbar = () => {
     return (
         <div className="navbar  bg-red-100 ">
         <div className="flex-1">
-         <img src={Logo} className="w-36 " alt="" />
+        <Link to='/'> <img src={Logo} className="w-36 " alt="" /></Link>
         </div>
         <div className="flex-none">
           <ul className="menu menu-horizontal px-1">
-            <li className="text-secondary"><Link>Media</Link></li>
+            <li className="text-secondary"><Link to='/media'>Media</Link></li>
             <li className="text-secondary"><Link>Message</Link></li>
           
             
@@ -49,9 +48,8 @@ const Navbar = () => {
       </label>
       <ul tabIndex={0} className="menu menu-compact dropdown-content mt-3 p-2 shadow bg-base-100 rounded-box w-52">
         <li>
-          <Link className="justify-between">
+          <Link to='/profile' className="justify-between">
             Profile
-            
           </Link>
         </li>
         <li><Link>Settings</Link></li>

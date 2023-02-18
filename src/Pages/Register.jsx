@@ -141,7 +141,7 @@ const Register = () => {
               </label>
               <input
                 type="text"
-                {...register("Location", {
+                {...register("location", {
                   required: "Location is required",
                 })}
                 className="input input-bordered w-full max-w-xs"
