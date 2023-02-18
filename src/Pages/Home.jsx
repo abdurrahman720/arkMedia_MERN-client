@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import Post from "../Components/Post";
 
+// http://localhost:5003/get-posts/home
 
 const Home = () => {
     const { loggedInUser } = useContext(UserContext);
@@ -22,12 +23,12 @@ const Home = () => {
       }
     });
 
-    const handleLikes = (postId) => {
+    const handleLikes = (postId, userId,refetch) => {
 
         const likerId = {
-            likerId: loggedInUser._id
+            likerId: userId
         }
-
+    
         fetch(`http://localhost:5003/like-post/${postId}`, {
             method: 'PATCH',
             headers: {
@@ -38,21 +39,20 @@ const Home = () => {
             .then(res => res.json())
             .then(data => {
                 console.log(data);
-                refetch();    
+                refetch()
+       
         })
-
-
+    
+    
     }
 
 
-
-  
     const memoizedPosts = useMemo(() => posts, [posts]);
   
     return (
       <div className="w-full max-w-2xl mx-auto font-arkFont">
             <MyPost loggedInUser={loggedInUser} refetch={refetch } />
-        {memoizedPosts?.map(post => <Post key={post._id} post={post} handleLikes={handleLikes} userId={loggedInUser._id} />)}
+        {memoizedPosts?.map(post => <Post key={post._id} post={post} handleLikes={handleLikes} refetch={refetch} userId={loggedInUser._id} />)}
       </div>
     );
   };

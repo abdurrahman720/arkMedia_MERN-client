@@ -1,5 +1,6 @@
 import React, { useContext } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
+import Loader from '../Components/Loader';
 import { UserContext } from '../Context/UserProvider';
 
 const PrivateRoute = ({ children }) => {
@@ -10,9 +11,7 @@ const PrivateRoute = ({ children }) => {
     const location = useLocation();
 
     if (loading) {
-        return <div>
-        loading..
-    </div>
+        return <Loader/>
     }
 
     if (user?.email) {

@@ -1,20 +1,57 @@
-import React, { useState } from "react";
-import { HiUserAdd } from "react-icons/hi";
-import { useNavigate } from "react-router-dom";
+import axios from 'axios';
+import React, { useContext, useState } from 'react';
+import { HiUserAdd } from 'react-icons/hi';
+import { useLoaderData } from 'react-router-dom';
+import { UserContext } from '../Context/UserProvider';
 
-const Post = ({ post,handleLikes,userId, refetch }) => {
-  const {_id, postUserName, postUserImage, postImage, postDescription, likes } =
-      post;
-    
-    let isLiked = false;
-    if (likes.indexOf(userId) !== -1) {
-         isLiked = true;
+
+
+const PostDetails = () => {
+    const post = useLoaderData();
+    const [fetchedPost,setFetchedPost] =useState(post)
+
+    const {_id, postUserName, postUserImage, postImage, postDescription, likes } =
+    fetchedPost;
+    const { loggedInUser } = useContext(UserContext);
+    const userId = loggedInUser._id;
+
+    const fetchPost = async () => {
+        const res = await axios.get(`http://localhost:5003/get-post/${_id}`);
+        const data = res.data;
+        setFetchedPost(data)
     }
+  
+    const handleLikesPost = (postId, userId) => {
 
-    const navigate = useNavigate()
-
-  return (
-    <div className="border-2  bg-red-100 border-red-50 rounded-xl p-2">
+        const likerId = {
+            likerId: userId
+        }
+    
+        fetch(`http://localhost:5003/like-post/${postId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(likerId)
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                fetchPost();
+       
+        })
+    
+    
+    }
+   
+  
+  let isLiked = false;
+  if (likes.indexOf(userId) !== -1) {
+       isLiked = true;
+  }
+    return (
+        <div  className="w-full max-w-2xl mx-auto font-arkFont">
+             <div className="border-2 bg-red-100 border-red-50 rounded-xl p-2">
       <div className="flex justify-between">
         <div className="flex justify-center items-center">
           <img
@@ -38,7 +75,7 @@ const Post = ({ post,handleLikes,userId, refetch }) => {
         />
         <div className="flex justify center p-2">
           <div>
-            <button onClick={() => handleLikes(_id,userId,refetch)}>
+            <button onClick={() => handleLikesPost(_id,userId)}>
               {isLiked ? (
                 <div className="flex">
                   <svg
@@ -96,13 +133,14 @@ const Post = ({ post,handleLikes,userId, refetch }) => {
           <p>{postDescription}</p>
         </div>
         <div className="flex">
-          <button onClick={()=>navigate(`/post/${_id}`)} className="btn w-[100px] h-auto md:w-96 mx-auto btn-secondary btn-outline">
+          <button  className="btn w-[100px] h-auto md:w-96 mx-auto btn-secondary btn-outline">
             Details
           </button>
         </div>
       </div>
     </div>
-  );
+        </div>
+    );
 };
 
-export default Post;
+export default PostDetails;

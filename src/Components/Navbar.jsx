@@ -31,7 +31,7 @@ const Navbar = () => {
 
 
     return (
-        <div className="navbar  bg-red-100 shadow-2xl">
+        <div className="navbar  bg-red-100 ">
         <div className="flex-1">
          <img src={Logo} className="w-36 " alt="" />
         </div>
