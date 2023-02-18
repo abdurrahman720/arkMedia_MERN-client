@@ -4,15 +4,15 @@ import MyPost from "../Components/MyPost";
 import { useQuery } from "@tanstack/react-query";
 import Post from "../Components/Post";
 
-
-
 const Home = () => {
   const { loggedInUser } = useContext(UserContext);
 
   const { data: posts, refetch } = useQuery({
     queryKey: ["posts"],
     queryFn: async () => {
-      const res = await fetch(`http://localhost:5003/get-posts/home`);
+      const res = await fetch(
+        `https://ark-media-server.vercel.app/get-posts/home`
+      );
       const data = await res.json();
 
       return data;
@@ -24,7 +24,7 @@ const Home = () => {
       likerId: userId,
     };
 
-    fetch(`http://localhost:5003/like-post/${postId}`, {
+    fetch(`https://ark-media-server.vercel.app/like-post/${postId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

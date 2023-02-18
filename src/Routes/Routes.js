@@ -9,41 +9,40 @@ import Register from "../Pages/Register";
 import PrivateRoute from "./PrivateRoute";
 
 export const router = createBrowserRouter([
-    {
+  {
+    path: "/",
+    element: (
+      <PrivateRoute>
+        <Main />
+      </PrivateRoute>
+    ),
+    children: [
+      {
         path: "/",
-        element: <PrivateRoute>
-            <Main/>
-        </PrivateRoute>,
-        children: [
-            {
-                path: "/",
-                element: 
-                    <Home/>
-           
-            },
-            {
-                path: "/post/:id",
-                loader: ({params})=> fetch(`http://localhost:5003/get-post/${params.id}`),
-                element: <PostDetails/>
-            },
-            {
-                path: '/media',
-                element: <Media/>
-            },
-            {
-                path: '/profile',
-                element: <Profile/>
-                
-            }
-        ]
-
-    },
-    {
-        path: "/login",
-        element: <Login/>
-    },
-    {
-        path: "/register",
-        element: <Register/>
-    }
-])
+        element: <Home />,
+      },
+      {
+        path: "/post/:id",
+        loader: ({ params }) =>
+          fetch(`https://ark-media-server.vercel.app/get-post/${params.id}`),
+        element: <PostDetails />,
+      },
+      {
+        path: "/media",
+        element: <Media />,
+      },
+      {
+        path: "/profile",
+        element: <Profile />,
+      },
+    ],
+  },
+  {
+    path: "/login",
+    element: <Login />,
+  },
+  {
+    path: "/register",
+    element: <Register />,
+  },
+]);

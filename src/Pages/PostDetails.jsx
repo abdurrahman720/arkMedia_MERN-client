@@ -24,14 +24,16 @@ const PostDetails = () => {
   const userId = loggedInUser._id;
 
   const fetchPost = async () => {
-    const res = await axios.get(`http://localhost:5003/get-post/${_id}`);
+    const res = await axios.get(
+      `https://ark-media-server.vercel.app/get-post/${_id}`
+    );
     const data = res.data;
     setFetchedPost(data);
   };
 
   const {
     handleSubmit,
-      register,
+    register,
     reset,
     formState: { errors },
   } = useForm();
@@ -41,7 +43,7 @@ const PostDetails = () => {
       likerId: userId,
     };
 
-    fetch(`http://localhost:5003/like-post/${postId}`, {
+    fetch(`https://ark-media-server.vercel.app/like-post/${postId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -59,34 +61,30 @@ const PostDetails = () => {
     isLiked = true;
   }
 
-    const handleComment = (data) => {
-      
-      const comment = {
-          postId: _id,
-          commenterId: userId,
-          commenterName: loggedInUser.userName,
-          commenterEmail: loggedInUser.userEmail,
-          commenterImage: loggedInUser.userImage,
-          commentText: data?.comment
-
-      }
-        fetch(`http://localhost:5003/add-comments/${_id}`, {
-            method: 'PATCH',
-            headers: {
-                "content-type" : "application/json"
-            },
-            body: JSON.stringify(comment)
-        })
-            .then(res => res.json())
-            .then(data => {
-                if (data.acknowledged) {
-                    reset();
-                    fetchPost();
-                    toast.success("Comment posted!")
-                    
-            }
-        })
-  
+  const handleComment = (data) => {
+    const comment = {
+      postId: _id,
+      commenterId: userId,
+      commenterName: loggedInUser.userName,
+      commenterEmail: loggedInUser.userEmail,
+      commenterImage: loggedInUser.userImage,
+      commentText: data?.comment,
+    };
+    fetch(`https://ark-media-server.vercel.app/add-comments/${_id}`, {
+      method: "PATCH",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(comment),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.acknowledged) {
+          reset();
+          fetchPost();
+          toast.success("Comment posted!");
+        }
+      });
   };
 
   return (
@@ -165,8 +163,8 @@ const PostDetails = () => {
                     strokeLinejoin="round"
                     d="M2.25 12.76c0 1.6 1.123 2.994 2.707 3.227 1.068.157 2.148.279 3.238.364.466.037.893.281 1.153.671L12 21l2.652-3.978c.26-.39.687-.634 1.153-.67 1.09-.086 2.17-.208 3.238-.365 1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z"
                   />
-                              </svg>
-                               {comments.length >= 1 && <p>{comments.length}</p>}
+                </svg>
+                {comments.length >= 1 && <p>{comments.length}</p>}
               </button>
             </div>
           </div>
@@ -203,11 +201,12 @@ const PostDetails = () => {
               </form>
             </div>
           </div>
-              </div>
-             
-              {
-                  comments.length >= 1 && comments.map((comment) => <PostComment key={comment._id} comment={comment}></PostComment>)
-              }
+        </div>
+
+        {comments.length >= 1 &&
+          comments.map((comment) => (
+            <PostComment key={comment._id} comment={comment}></PostComment>
+          ))}
       </div>
     </div>
   );

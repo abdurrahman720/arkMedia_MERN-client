@@ -1,13 +1,13 @@
-import React, { useContext, useState,useEffect } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import image from "../assets/png/logo-color.png";
 import Loader from "../Components/Loader";
 import { UserContext } from "../Context/UserProvider";
 
 const Register = () => {
-  const { emailSignUp, updateName, googleSign, isLoading } = useContext(UserContext);
+  const { emailSignUp, updateName, isLoading } = useContext(UserContext);
   const {
     register,
     formState: { errors },
@@ -16,86 +16,83 @@ const Register = () => {
   const [signError, setSignError] = useState("");
 
   const navigate = useNavigate();
-  const location = useLocation();
-  const from = location?.state?.from?.pathname || "/";
+  // const location = useLocation();
+  // const from = location?.state?.from?.pathname || "/";
 
   const imgHostKey = process.env.REACT_APP_imgbb;
-  const [regLoading, setRegLoading] = useState(false)
+  const [regLoading, setRegLoading] = useState(false);
 
   const handleSignUp = (data) => {
-    setRegLoading(true)
+    setRegLoading(true);
     setSignError("");
     console.log(data);
     //firebase authentication
-    
+
     emailSignUp(data?.email, data?.password)
-      .then(userCredentials => {
+      .then((userCredentials) => {
         const signedInUser = userCredentials.user;
         console.log(signedInUser);
-        updateName(data.name)
-          .then(() => {
-            console.log("name updated");
-            //store image to imgbb
-            const img = data.userImage[0];
-            console.log(img);
-            const formData = new FormData();
-            formData.append("image", img);
-            const url = `https://api.imgbb.com/1/upload?&key=${imgHostKey}`;
-            fetch(url, {
-              method: 'POST',
-              body: formData
-            })
-              .then((res) => res.json())
-              .then((imageData) => {
-                console.log(imageData);
-                if (imageData.success) {
-                  console.log(imageData.data.url);
-                  // add to database
-                  const user = {
-                    userName: data.name,
-                    userEmail: data.email,
-                    userImage: imageData.data.url,
-                    university: data.university,
-                    location: data.location,
-                    friends:[]
-                  }
-                  fetch(`http://localhost:5003/add-users`, {
-                    method: 'POST',
-                    headers: { 'content-type': 'application/json' },
-                    body: JSON.stringify(user)
-                  })
-                    .then((res) => res.json())
-                    .then((data) => {
-                      if (data.acknowledged) {
-                        console.log(user?.userEmail);
+        updateName(data.name).then(() => {
+          console.log("name updated");
+          //store image to imgbb
+          const img = data.userImage[0];
+          console.log(img);
+          const formData = new FormData();
+          formData.append("image", img);
+          const url = `https://api.imgbb.com/1/upload?&key=${imgHostKey}`;
+          fetch(url, {
+            method: "POST",
+            body: formData,
+          })
+            .then((res) => res.json())
+            .then((imageData) => {
+              console.log(imageData);
+              if (imageData.success) {
+                console.log(imageData.data.url);
+                // add to database
+                const user = {
+                  userName: data.name,
+                  userEmail: data.email,
+                  userImage: imageData.data.url,
+                  university: data.university,
+                  location: data.location,
+                  friends: [],
+                };
+                fetch(`https://ark-media-server.vercel.app/add-users`, {
+                  method: "POST",
+                  headers: { "content-type": "application/json" },
+                  body: JSON.stringify(user),
+                })
+                  .then((res) => res.json())
+                  .then((data) => {
+                    if (data.acknowledged) {
+                      console.log(user?.userEmail);
                       //jwt token
-                        fetch(`http://localhost:5003/jwt?email=${user?.userEmail}`)
-                          .then((response) => response.json())
-                          .then((data) => {
-                            setRegLoading(false)
-                            localStorage.setItem("arkMEDIA", data.accessToken);
-                            toast.success("Registration Success!");
-                            navigate("/");
-                        })
+                      fetch(
+                        `https://ark-media-server.vercel.app/jwt?email=${user?.userEmail}`
+                      )
+                        .then((response) => response.json())
+                        .then((data) => {
+                          setRegLoading(false);
+                          localStorage.setItem("arkMEDIA", data.accessToken);
+                          toast.success("Registration Success!");
+                          navigate("/");
+                        });
                     }
-                  })
-
-                }
-            })
-          });
-        
+                  });
+              }
+            });
+        });
       })
       .catch((err) => {
         isLoading(false);
         toast.error(err.message);
-    })
-  }
+      });
+  };
 
   if (regLoading) {
-   return <Loader></Loader>
- }
-  
-
+    return <Loader></Loader>;
+  }
 
   return (
     <div
@@ -185,21 +182,21 @@ const Register = () => {
               )}
             </div>
             <div className="form-control w-full max-w-xs mt-2  ">
-          <label className="label">
-            <span className="label-text">User Image</span>
-          </label>
-          <input
-            type="file"
-            className="input input-bordered"
-            {...register("userImage", { required: "photo is required" })}
-            placeholder=""
-          />
-          {errors.userImage && (
-            <p className="text-red-600" role="alert">
-              {errors.userImage?.message}
-            </p>
-          )}
-        </div>
+              <label className="label">
+                <span className="label-text">User Image</span>
+              </label>
+              <input
+                type="file"
+                className="input input-bordered"
+                {...register("userImage", { required: "photo is required" })}
+                placeholder=""
+              />
+              {errors.userImage && (
+                <p className="text-red-600" role="alert">
+                  {errors.userImage?.message}
+                </p>
+              )}
+            </div>
             <input
               className="btn btn-accent w-full mt-5"
               value="Register"
@@ -209,19 +206,20 @@ const Register = () => {
               {signError && <p className="text-red-600">{signError}</p>}
             </div>
           </form>
-          <p className="text-sm">
+          {/* <p className="text-sm">
             Already have an account?{" "}
             <Link className="text-secondary" to="/login">
               Login
             </Link>
-          </p>
+          </p> */}
           <div className="divider">OR</div>
-          <button
+          <Link
+            to="/login"
             // onClick={handleGoogleSign}
             className="btn btn-outline btn-secondary w-full"
           >
-            CONTINUE WITH GOOGLE
-          </button>
+            Login Here
+          </Link>
         </div>
       </div>
     </div>

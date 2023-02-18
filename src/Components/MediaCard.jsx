@@ -7,7 +7,6 @@ const MediaCard = ({ post }) => {
   const { loggedInUser } = useContext(UserContext);
   const userId = loggedInUser._id;
 
-  let isLiked = false;
   const {
     _id,
     postUserName,
@@ -17,6 +16,14 @@ const MediaCard = ({ post }) => {
     likes,
     comments,
   } = post;
+    
+  let isLiked = false;
+  if (likes.indexOf(userId) !== -1) {
+    isLiked = true;
+  }
+    
+    
+    
   return (
     <Link  to={(`/post/${_id}`)} >
       <div className="border-2 bg-red-100 border-red-50 rounded-xl p-2">
