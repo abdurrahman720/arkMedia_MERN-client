@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import image from "../assets/png/logo-color.png";
+import Loader from "../Components/Loader";
 import { UserContext } from "../Context/UserProvider";
 
 const Register = () => {
@@ -19,12 +20,14 @@ const Register = () => {
   const from = location?.state?.from?.pathname || "/";
 
   const imgHostKey = process.env.REACT_APP_imgbb;
-
+  const [regLoading, setRegLoading] = useState(false)
 
   const handleSignUp = (data) => {
+    setRegLoading(true)
     setSignError("");
     console.log(data);
     //firebase authentication
+    
     emailSignUp(data?.email, data?.password)
       .then(userCredentials => {
         const signedInUser = userCredentials.user;
@@ -69,6 +72,7 @@ const Register = () => {
                         fetch(`http://localhost:5003/jwt?email=${user?.userEmail}`)
                           .then((response) => response.json())
                           .then((data) => {
+                            setRegLoading(false)
                             localStorage.setItem("arkMEDIA", data.accessToken);
                             toast.success("Registration Success!");
                             navigate("/");
@@ -87,15 +91,9 @@ const Register = () => {
     })
   }
 
-//   useEffect(() => {
-//     toast.promise(handleSignUp(), {
-//       loading: "Creating User",
-
-//       error: "User created failed",
-//       success: "User has been created",
-      
-//     });
-// },[])
+  if (regLoading) {
+   return <Loader></Loader>
+ }
   
 
 

@@ -5,7 +5,7 @@ import { UserContext } from '../Context/UserProvider';
 const PrivateRoute = ({ children }) => {
     const { user, loading } = useContext(UserContext);
 
-    console.log(loading)
+
 
     const location = useLocation();
 
