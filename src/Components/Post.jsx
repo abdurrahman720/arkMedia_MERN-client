@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import { HiUserAdd } from "react-icons/hi";
 
-const Post = ({ post }) => {
-  const { postUserName, postUserImage, postImage, postDescription, likes } =
-    post;
+const Post = ({ post,handleLikes,userId }) => {
+  const {_id, postUserName, postUserImage, postImage, postDescription, likes } =
+      post;
+    
+    let isLiked = false;
+    if (likes.indexOf(userId) !== -1) {
+         isLiked = true;
+    }
 
-  const [isLiked, setIsLiked] = useState(false);
-  console.log(isLiked);
+
+    
 
   // const isLiked = likes[userId];
   // console.log(isLiked)
@@ -36,7 +41,7 @@ const Post = ({ post }) => {
         />
         <div className="flex justify center p-2">
           <div>
-            <button onClick={() => setIsLiked(!isLiked)}>
+            <button onClick={() => handleLikes(_id)}>
               {isLiked ? (
                 <div className="flex">
                   <svg

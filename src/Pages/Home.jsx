@@ -22,14 +22,37 @@ const Home = () => {
       }
     });
 
-    
+    const handleLikes = (postId) => {
+
+        const likerId = {
+            likerId: loggedInUser._id
+        }
+
+        fetch(`http://localhost:5003/like-post/${postId}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(likerId)
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log(data);
+                refetch();    
+        })
+
+
+    }
+
+
+
   
     const memoizedPosts = useMemo(() => posts, [posts]);
   
     return (
       <div className="w-full max-w-2xl mx-auto font-arkFont">
             <MyPost loggedInUser={loggedInUser} refetch={refetch } />
-        {memoizedPosts?.map(post => <Post key={post._id} post={post} />)}
+        {memoizedPosts?.map(post => <Post key={post._id} post={post} handleLikes={handleLikes} userId={loggedInUser._id} />)}
       </div>
     );
   };
