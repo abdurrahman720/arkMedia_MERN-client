@@ -11,7 +11,7 @@ const Home = () => {
     queryKey: ["posts"],
     queryFn: async () => {
       const res = await fetch(
-        `https://ark-media-server.vercel.app/get-posts/home`
+        `https://ark-media-server.vercel.app/get-posts`
       );
       const data = await res.json();
 
