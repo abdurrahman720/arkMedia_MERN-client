@@ -48,9 +48,7 @@ const UserProvider = ({ children }) => {
       setUser(currentUser);
       if (currentUser != null) {
         isLoading(true);
-        fetch(
-          `https://ark-media-server.vercel.app/get-user?email=${currentUser?.email}`
-        )
+        fetch(`http://localhost:5003/get-user?email=${currentUser?.email}`)
           .then((response) => response.json())
           .then((data) => {
             console.log(data);

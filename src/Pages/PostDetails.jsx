@@ -3,7 +3,7 @@ import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-hot-toast";
 import { HiUserAdd } from "react-icons/hi";
-import { useLoaderData } from "react-router-dom";
+import { Link, useLoaderData } from "react-router-dom";
 import PostComment from "../Components/PostComment";
 import { UserContext } from "../Context/UserProvider";
 
@@ -13,6 +13,7 @@ const PostDetails = () => {
 
   const {
     _id,
+    postUserEmail,
     postUserName,
     postUserImage,
     postImage,
@@ -24,9 +25,7 @@ const PostDetails = () => {
   const userId = loggedInUser._id;
 
   const fetchPost = async () => {
-    const res = await axios.get(
-      `https://ark-media-server.vercel.app/get-post/${_id}`
-    );
+    const res = await axios.get(`http://localhost:5003/get-post/${_id}`);
     const data = res.data;
     setFetchedPost(data);
   };
@@ -43,7 +42,7 @@ const PostDetails = () => {
       likerId: userId,
     };
 
-    fetch(`https://ark-media-server.vercel.app/like-post/${postId}`, {
+    fetch(`http://localhost:5003/like-post/${postId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -70,7 +69,7 @@ const PostDetails = () => {
       commenterImage: loggedInUser.userImage,
       commentText: data?.comment,
     };
-    fetch(`https://ark-media-server.vercel.app/add-comments/${_id}`, {
+    fetch(`http://localhost:5003/add-comments/${_id}`, {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
@@ -91,6 +90,7 @@ const PostDetails = () => {
     <div className="w-full max-w-2xl mx-auto">
       <div className="border-2 bg-red-100 border-red-50 rounded-xl p-2">
         <div className="flex justify-between">
+          <Link to={(`/profile/${postUserEmail}`)}>
           <div className="flex justify-center items-center">
             <img
               className="w-12 h-12 rounded-xl object-cover "
@@ -99,6 +99,7 @@ const PostDetails = () => {
             />
             <h5>{postUserName}</h5>
           </div>
+          </Link>
           <div className="flex items-center">
             <button>
               <HiUserAdd className="w-10" />

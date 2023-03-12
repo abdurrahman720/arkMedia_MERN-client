@@ -58,7 +58,7 @@ const Register = () => {
                   location: data.location,
                   friends: [],
                 };
-                fetch(`https://ark-media-server.vercel.app/add-users`, {
+                fetch(`http://localhost:5003/add-users`, {
                   method: "POST",
                   headers: { "content-type": "application/json" },
                   body: JSON.stringify(user),
@@ -69,7 +69,7 @@ const Register = () => {
                       console.log(user?.userEmail);
                       //jwt token
                       fetch(
-                        `https://ark-media-server.vercel.app/jwt?email=${user?.userEmail}`
+                        `http://localhost:5003/jwt?email=${user?.userEmail}`
                       )
                         .then((response) => response.json())
                         .then((data) => {

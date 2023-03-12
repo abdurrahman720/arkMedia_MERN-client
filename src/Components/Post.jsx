@@ -1,9 +1,9 @@
 import React from "react";
 import { HiUserAdd } from "react-icons/hi";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Post = ({ post,handleLikes,userId, refetch }) => {
-  const {_id, postUserName, postUserImage, postImage, postDescription, likes, comments } =
+  const {_id, postUserName,postUserEmail, postUserImage, postImage, postDescription, likes, comments } =
       post;
     
     let isLiked = false;
@@ -14,8 +14,10 @@ const Post = ({ post,handleLikes,userId, refetch }) => {
     const navigate = useNavigate()
 
   return (
-    <div className="border-2  bg-red-100 border-red-50 rounded-xl p-2">
+   
+       <div className="border-2  bg-red-100 border-red-50 rounded-xl p-2">
       <div className="flex justify-between">
+        <Link to={(`/profile/${postUserEmail}`)}>
         <div className="flex justify-center items-center">
           <img
             className="w-12 h-12 rounded-xl object-cover "
@@ -24,12 +26,15 @@ const Post = ({ post,handleLikes,userId, refetch }) => {
           />
           <h5>{postUserName}</h5>
         </div>
+      </Link>
+       
         <div className="flex items-center">
           <button>
             <HiUserAdd className="w-10" />
           </button>
         </div>
       </div>
+      <Link to={(`/post/${_id}`)} >
       <div className=" flex flex-col  mt-2">
         <img
           src={postImage}
@@ -96,13 +101,17 @@ const Post = ({ post,handleLikes,userId, refetch }) => {
         <div>
           <p>{postDescription}</p>
         </div>
-        <div className="flex">
+        {/* <div className="flex">
           <button onClick={()=>navigate(`/post/${_id}`)} className="btn w-[100px] h-auto md:w-96 mx-auto btn-secondary btn-outline">
             Details
           </button>
-        </div>
+        </div> */}
       </div>
+      </Link>
+     
     </div>
+
+   
   );
 };
 

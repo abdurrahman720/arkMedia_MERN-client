@@ -24,7 +24,7 @@ export const router = createBrowserRouter([
       {
         path: "/post/:id",
         loader: ({ params }) =>
-          fetch(`https://ark-media-server.vercel.app/get-post/${params.id}`),
+          fetch(`http://localhost:5003/get-post/${params.id}`),
         element: <PostDetails />,
       },
       {
@@ -35,6 +35,11 @@ export const router = createBrowserRouter([
         path: "/profile",
         element: <Profile />,
       },
+      {
+        path: "/profile/:userEmail",
+        loader: ({params}) => fetch (`http://localhost:5003/get-user?email=${params.userEmail}`),
+        element: <Profile/>
+      }
     ],
   },
   {

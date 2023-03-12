@@ -22,7 +22,7 @@ const Login = () => {
       .then((userCredentials) => {
         const user = userCredentials.user;
         //jwt token
-        fetch(`https://ark-media-server.vercel.app/jwt?email=${user?.email}`)
+        fetch(`http://localhost:5003/jwt?email=${user?.email}`)
           .then((response) => response.json())
           .then((data) => {
             localStorage.setItem("arkMEDIA", data.accessToken);

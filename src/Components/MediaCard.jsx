@@ -35,7 +35,7 @@ const MediaCard = ({ post }) => {
           />
           <div className="flex justify center p-2">
             <div>
-              <button>
+              <button >
                 {isLiked ? (
                   <div className="flex">
                     <svg

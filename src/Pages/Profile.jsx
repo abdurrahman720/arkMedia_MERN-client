@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../Context/UserProvider";
 import { TbEdit } from "react-icons/tb";
 import { MdLocationOn } from "react-icons/md";
@@ -8,16 +8,36 @@ import Loader from "../Components/Loader";
 import MediaCard from "../Components/MediaCard";
 import { toast } from "react-hot-toast";
 import axios from "axios";
+import { useLoaderData } from "react-router-dom";
+import { HiUserAdd } from "react-icons/hi";
 
 const Profile = () => {
+  const visitUser = useLoaderData();
+  console.log(visitUser?.userEmail);
+  const [loading, setLoading] = useState(true);
+  
   const { loggedInUser } = useContext(UserContext);
   const [user, setUser] = useState(loggedInUser);
+  const [visitor, setVisitor] = useState(false);
+
+  useEffect(() => {
+    if (visitUser === undefined) {
+      setUser(loggedInUser)
+    }
+    else if (visitUser?.userEmail !== user?.userEmail) {
+      setUser(visitUser);
+      setVisitor(true);
+     
+    }
+    setLoading(false)
+  }, [visitUser?.userEmail, user?.userEmail]); 
+
   const { _id, userImage, userName, userEmail, university, location } = user;
   const [isEditing, setIsEditing] = useState(null);
 
   const fetchUser = async () => {
     const res = await axios.get(
-      `https://ark-media-server.vercel.app/get-user?email=${userEmail}`
+      `http://localhost:5003/get-user?email=${userEmail}`
     );
     const data = res.data;
     setUser(data);
@@ -27,7 +47,7 @@ const Profile = () => {
     queryKey: ["posts"],
     queryFn: async () => {
       const res = await fetch(
-        `https://ark-media-server.vercel.app/get-posts/profile?userId=${_id}`
+        `http://localhost:5003/get-posts/profile?userId=${_id}`
       );
       const data = await res.json();
       return data;
@@ -47,7 +67,7 @@ const Profile = () => {
       university,
     };
 
-    fetch(`https://ark-media-server.vercel.app/edit-profile/${_id}`, {
+    fetch(`http://localhost:5003/edit-profile/${_id}`, {
       method: "PATCH",
       headers: {
         "content-type": "application/json",
@@ -65,7 +85,7 @@ const Profile = () => {
     setIsEditing(null);
   };
 
-  if (isLoading) {
+  if (isLoading || loading) {
     return <Loader />;
   }
 
@@ -74,12 +94,15 @@ const Profile = () => {
       <div className="w-full max-w-2xl mx-auto">
         <div className="border-2 bg-red-100 border-red-50 rounded-xl p-2">
           <div className="flex justify-end">
-            <label
+            {
+              visitor ? <HiUserAdd/> : <label
               onClick={() => setIsEditing(loggedInUser)}
               htmlFor="edit-modal"
             >
               <TbEdit />
             </label>
+            }
+            
           </div>
           <div className="flex flex-col items-center">
             <div className="">
