@@ -15,22 +15,20 @@ const Profile = () => {
   const visitUser = useLoaderData();
   console.log(visitUser?.userEmail);
   const [loading, setLoading] = useState(true);
-  
+
   const { loggedInUser } = useContext(UserContext);
   const [user, setUser] = useState(loggedInUser);
   const [visitor, setVisitor] = useState(false);
 
   useEffect(() => {
     if (visitUser === undefined) {
-      setUser(loggedInUser)
-    }
-    else if (visitUser?.userEmail !== user?.userEmail) {
+      setUser(loggedInUser);
+    } else if (visitUser?.userEmail !== user?.userEmail) {
       setUser(visitUser);
       setVisitor(true);
-     
     }
-    setLoading(false)
-  }, [visitUser?.userEmail, user?.userEmail]); 
+    setLoading(false);
+  }, [visitUser?.userEmail, user?.userEmail]);
 
   const { _id, userImage, userName, userEmail, university, location } = user;
   const [isEditing, setIsEditing] = useState(null);
@@ -94,15 +92,16 @@ const Profile = () => {
       <div className="w-full max-w-2xl mx-auto">
         <div className="border-2 bg-red-100 border-red-50 rounded-xl p-2">
           <div className="flex justify-end">
-            {
-              visitor ? <HiUserAdd/> : <label
-              onClick={() => setIsEditing(loggedInUser)}
-              htmlFor="edit-modal"
-            >
-              <TbEdit />
-            </label>
-            }
-            
+            {visitor ? (
+              <HiUserAdd />
+            ) : (
+              <label
+                onClick={() => setIsEditing(loggedInUser)}
+                htmlFor="edit-modal"
+              >
+                <TbEdit />
+              </label>
+            )}
           </div>
           <div className="flex flex-col items-center">
             <div className="">

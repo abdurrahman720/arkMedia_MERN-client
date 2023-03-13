@@ -36,12 +36,11 @@ const Home = () => {
       });
   };
 
-  const memoizedPosts = useMemo(() => posts, [posts]);
 
   return (
     <div className="w-full max-w-2xl mx-auto font-arkFont">
       <MyPost loggedInUser={loggedInUser} refetch={refetch} />
-      {memoizedPosts?.map((post) => (
+      {posts?.map((post) => (
         <Post
           key={post._id}
           post={post}
