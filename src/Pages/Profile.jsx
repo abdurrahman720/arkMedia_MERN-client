@@ -17,7 +17,7 @@ const Profile = () => {
   const [loading, setLoading] = useState(true);
 
   const { loggedInUser } = useContext(UserContext);
-  const [user, setUser] = useState(loggedInUser);
+  const [user, setUser] = useState(visitUser);
   const [visitor, setVisitor] = useState(false);
 
   useEffect(() => {
