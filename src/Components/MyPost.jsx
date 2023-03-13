@@ -44,7 +44,7 @@ const MyPost = ({ loggedInUser, refetch }) => {
             timeStamp: new Date(),
           };
 
-          fetch(`http://localhost:5003/add-post`, {
+          fetch(`https://ark-media-server.vercel.app/add-post`, {
             method: "POST",
             headers: {
               "content-type": "application/json",

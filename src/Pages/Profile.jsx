@@ -35,7 +35,7 @@ const Profile = () => {
 
   const fetchUser = async () => {
     const res = await axios.get(
-      `http://localhost:5003/get-user?email=${userEmail}`
+      `https://ark-media-server.vercel.app/get-user?email=${userEmail}`
     );
     const data = res.data;
     setUser(data);
@@ -45,7 +45,7 @@ const Profile = () => {
     queryKey: ["posts"],
     queryFn: async () => {
       const res = await fetch(
-        `http://localhost:5003/get-posts/profile?userId=${_id}`
+        `https://ark-media-server.vercel.app/get-posts/profile?userId=${_id}`
       );
       const data = await res.json();
       return data;
@@ -65,7 +65,7 @@ const Profile = () => {
       university,
     };
 
-    fetch(`http://localhost:5003/edit-profile/${_id}`, {
+    fetch(`https://ark-media-server.vercel.app/edit-profile/${_id}`, {
       method: "PATCH",
       headers: {
         "content-type": "application/json",

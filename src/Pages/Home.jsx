@@ -10,7 +10,7 @@ const Home = () => {
   const { data: posts, refetch } = useQuery({
     queryKey: ["posts"],
     queryFn: async () => {
-      const res = await fetch(`http://localhost:5003/get-posts`);
+      const res = await fetch(`https://ark-media-server.vercel.app/get-posts`);
       const data = await res.json();
 
       return data;
@@ -22,7 +22,7 @@ const Home = () => {
       likerId: userId,
     };
 
-    fetch(`http://localhost:5003/like-post/${postId}`, {
+    fetch(`https://ark-media-server.vercel.app/like-post/${postId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -35,7 +35,6 @@ const Home = () => {
         refetch();
       });
   };
-
 
   return (
     <div className="w-full max-w-2xl mx-auto font-arkFont">
