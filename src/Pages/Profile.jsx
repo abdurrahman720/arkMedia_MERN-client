@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useCallback, useContext, useEffect, useState } from "react";
 import { UserContext } from "../Context/UserProvider";
 import { TbEdit } from "react-icons/tb";
 import { MdLocationOn } from "react-icons/md";
@@ -13,25 +13,57 @@ import { HiUserAdd } from "react-icons/hi";
 
 const Profile = () => {
   const visitUser = useLoaderData();
-  console.log(visitUser?.userEmail);
-  const [loading, setLoading] = useState(true);
+  // console.log("VISITED: ",visitUser?.userEmail);
+  // const [loading, setLoading] = useState(true);
 
-  const { loggedInUser } = useContext(UserContext);
+  const { loggedInUser,loading, isLoading } = useContext(UserContext);
+  // console.log("LOGGEDIN: ",loggedInUser)
+  const [posts,setPosts] = useState([])
   const [user, setUser] = useState(visitUser);
-  const [visitor, setVisitor] = useState(false);
+  const [visitor, setVisitor] = useState(true);
+
+  console.log("USER:",user)
+
+  const { _id, userImage, userName, userEmail, university, location } = user;
+  const [isEditing, setIsEditing] = useState(null);
+
 
   useEffect(() => {
     if (visitUser === undefined) {
       setUser(loggedInUser);
+      setVisitor(false);
+      isLoading(false)
     } else if (visitUser?.userEmail !== user?.userEmail) {
       setUser(visitUser);
       setVisitor(true);
+      isLoading(false)
     }
-    setLoading(false);
-  }, [visitUser?.userEmail, user?.userEmail]);
+  }, [visitUser, loggedInUser, user?.userEmail, user]);
+  
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const res = await axios.get(
+          `https://ark-media-server.vercel.app/get-posts/profile?userId=${_id}`
+        );
+        const data = res.data;
+        console.log("POSTS DATA:", data);
+        setPosts(data);
+        // setLoading(false);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+        // setLoading(false);
+      }
+    };
+  
+    fetchPosts();
+  },[_id]);
+  
+  
+  
+  
+  
 
-  const { _id, userImage, userName, userEmail, university, location } = user;
-  const [isEditing, setIsEditing] = useState(null);
 
   const fetchUser = async () => {
     const res = await axios.get(
@@ -41,16 +73,18 @@ const Profile = () => {
     setUser(data);
   };
 
-  const { data: posts, isLoading } = useQuery({
-    queryKey: ["posts"],
-    queryFn: async () => {
-      const res = await fetch(
-        `https://ark-media-server.vercel.app/get-posts/profile?userId=${_id}`
-      );
-      const data = await res.json();
-      return data;
-    },
-  });
+  // const { data: posts, isLoading } = useQuery({
+  //   queryKey: ["posts"],
+  //   queryFn: async () => {
+  //     const res = await fetch(
+  //       `https://ark-media-server.vercel.app/get-posts/profile?userId=${_id}`
+  //     );
+  //     const data = await res.json();
+  //     return data;
+  //   },
+  // });
+
+ 
 
   const handleEdit = (e) => {
     e.preventDefault();
@@ -83,7 +117,7 @@ const Profile = () => {
     setIsEditing(null);
   };
 
-  if (isLoading || loading) {
+  if (loading) {
     return <Loader />;
   }
 
@@ -92,7 +126,7 @@ const Profile = () => {
       <div className="w-full max-w-2xl mx-auto">
         <div className="border-2 bg-red-100 border-red-50 rounded-xl p-2">
           <div className="flex justify-end">
-            {visitor ? (
+            {visitor===true ? (
               <HiUserAdd />
             ) : (
               <label
@@ -122,7 +156,7 @@ const Profile = () => {
           </div>
         </div>
       </div>
-      {posts.length >= 1 && (
+      {posts?.length >= 0 && (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-1">
           {posts?.map((post) => (
             <MediaCard key={post._id} post={post} />

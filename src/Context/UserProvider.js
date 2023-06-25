@@ -46,7 +46,7 @@ const UserProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
-      if (currentUser != null) {
+      if (currentUser != null|| undefined) {
         isLoading(true);
         fetch(
           `https://ark-media-server.vercel.app/get-user?email=${currentUser?.email}`
@@ -65,7 +65,7 @@ const UserProvider = ({ children }) => {
     return () => {
       unsubscribe();
     };
-  }, []);
+  },[]);
 
   const userInfo = {
     user,
